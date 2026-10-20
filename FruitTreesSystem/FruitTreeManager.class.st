@@ -7,9 +7,22 @@ Class {
 	#instVars : [
 		'treesCollection'
 	],
+	#classInstVars : [
+		'uniqueInstance'
+	],
 	#category : 'FruitTreesSystem',
 	#package : 'FruitTreesSystem'
 }
+
+{ #category : 'accessing' }
+FruitTreeManager class >> default [
+    ^ uniqueInstance ifNil: [ uniqueInstance := self new ]
+]
+
+{ #category : 'initialization' }
+FruitTreeManager class >> reset [
+    uniqueInstance := nil
+]
 
 { #category : 'adding' }
 FruitTreeManager >> addTree: aTree [
@@ -110,6 +123,12 @@ FruitTreeManager >> loadFromJSONFile: aFileName [
 ]
 
 { #category : 'as yet unclassified' }
+FruitTreeManager >> loadFromSTON: aFileName [
+    aFileName asFileReference readStreamDo: [ :stream |
+        treesCollection := STON fromStream: stream ]
+]
+
+{ #category : 'as yet unclassified' }
 FruitTreeManager >> mostProductiveTree [
     | best |
 
@@ -162,6 +181,12 @@ FruitTreeManager >> saveToJSONFile: aFileName [
 
     ^ file
 
+]
+
+{ #category : 'as yet unclassified' }
+FruitTreeManager >> saveToSTON: aFileName [
+    aFileName asFileReference writeStreamDo: [ :stream |
+        STON put: treesCollection onStream: stream ]
 ]
 
 { #category : 'as yet unclassified' }
