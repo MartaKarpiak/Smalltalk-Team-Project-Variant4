@@ -8,6 +8,16 @@ Class {
 	#package : 'FruitTreesSystem-Tests'
 }
 
+{ #category : 'tests - manager' }
+FruitTreeTest >> testAddTreeRejectsNonTree [
+	| manager |
+	manager := FruitTreeManager new.
+
+	self should: [ manager addTree: 42 ] raise: Error.
+	self assert: manager trees isEmpty
+
+]
+
 { #category : 'tests' }
 FruitTreeTest >> testAppleFruitingCycle [
     | apple |
@@ -25,6 +35,26 @@ FruitTreeTest >> testAppleFruitingCycle [
 
     apple age: 5.
     self assert: apple canBearFruit
+
+]
+
+{ #category : 'tests - growth' }
+FruitTreeTest >> testAppleYieldGrowsOnlyInFruitingYears [
+	| apple |
+	apple := AppleTree new.
+	apple age: 2.
+
+	apple growOneYear.
+	self assert: apple age equals: 3.
+	self assert: apple yield equals: 5.
+
+	apple growOneYear.
+	self assert: apple age equals: 4.
+	self assert: apple yield equals: 5.
+
+	apple growOneYear.
+	self assert: apple age equals: 5.
+	self assert: apple yield equals: 10
 
 ]
 
@@ -48,6 +78,100 @@ FruitTreeTest >> testApricotFrost [
 
 ]
 
+{ #category : 'tests - growth' }
+FruitTreeTest >> testApricotNoHarvestBeforeFruitingAge [
+	| apricot |
+	apricot := ApricotTree new.
+	apricot age: 1.
+	apricot yield: 20.
+
+	self assert: apricot currentHarvest equals: 0.
+
+	apricot hadFrostDuringFlowering: true.
+	self assert: apricot currentHarvest equals: 0
+
+]
+
+{ #category : 'tests - arithmetic' }
+FruitTreeTest >> testArithmeticOperators [
+	| big small |
+	big := AppleTree new yield: 20; yourself.
+	small := ApricotTree new yield: 15; yourself.
+
+	self assert: big + small equals: 35.
+	self assert: big - small equals: 5.
+	self assert: big * small equals: 300.
+	self assert: big / small equals: 4 / 3
+
+]
+
+{ #category : 'tests - comparing' }
+FruitTreeTest >> testComparisonOperators [
+	| big small sameAsBig |
+	big := AppleTree new yield: 20; yourself.
+	small := ApricotTree new yield: 15; yourself.
+	sameAsBig := ApricotTree new yield: 20; yourself.
+
+	self assert: big > small.
+	self assert: small < big.
+	self assert: big >= sameAsBig.
+	self assert: big <= sameAsBig.
+	self assert: big = sameAsBig.
+	self deny: big = small.
+	self deny: big = 20
+
+]
+
+{ #category : 'tests - persistence' }
+FruitTreeTest >> testDefaultManagerActsAsInMemoryDatabase [
+	| first second |
+	FruitTreeManager reset.
+
+	[
+		first := FruitTreeManager default.
+		first addTree: AppleTree new.
+
+		second := FruitTreeManager default.
+
+		self assert: first == second.
+		self assert: second trees size equals: 1.
+
+		FruitTreeManager reset.
+
+		self deny: FruitTreeManager default == first.
+		self assert: FruitTreeManager default trees isEmpty
+	] ensure: [
+		FruitTreeManager reset ]
+
+]
+
+{ #category : 'tests - demo' }
+FruitTreeTest >> testDemoSampleManager [
+	| manager |
+	manager := FruitTreeDemo sampleManager.
+
+	self assert: manager trees size equals: 4.
+	self assert: (manager trees count: [ :tree | tree isKindOf: AppleTree ]) equals: 2.
+	self assert: (manager trees count: [ :tree | tree isKindOf: ApricotTree ]) equals: 2.
+	self assert: manager tallestTree height equals: 3.2.
+	self assert: manager treesOfFruitingAge size equals: 3
+
+]
+
+{ #category : 'tests - manager' }
+FruitTreeTest >> testEmptyManager [
+	| manager |
+	manager := FruitTreeManager new.
+
+	self assert: manager trees isEmpty.
+	self assert: manager tallestTree isNil.
+	self assert: manager mostProductiveTree isNil.
+	self assert: manager topThreeMostProductiveTrees isEmpty.
+	self assert: (manager treesNotTallerThan: 10) isEmpty.
+	self assert: manager treesOfFruitingAge isEmpty
+
+]
+
 { #category : 'tests' }
 FruitTreeTest >> testFruitTreeInitialization [
     | tree |
@@ -59,6 +183,35 @@ FruitTreeTest >> testFruitTreeInitialization [
     self assert: tree height equals: 0.
     self assert: tree yield equals: 0.
     self assert: tree fruitingAge equals: 3
+
+]
+
+{ #category : 'tests - growth' }
+FruitTreeTest >> testGrowOneYearBeforeFruitingAge [
+	| tree |
+	tree := FruitTree new.
+	tree height: 1.
+
+	tree growOneYear.
+
+	self assert: tree age equals: 1.
+	self assert: (tree height closeTo: 1.3).
+	self assert: tree yield equals: 0
+
+]
+
+{ #category : 'tests - growth' }
+FruitTreeTest >> testGrowOneYearReachingFruitingAge [
+	| tree |
+	tree := FruitTree new.
+	tree age: 2.
+	tree yield: 10.
+
+	tree growOneYear.
+
+	self assert: tree age equals: 3.
+	self assert: tree canBearFruit.
+	self assert: tree yield equals: 15
 
 ]
 
@@ -233,5 +386,80 @@ FruitTreeTest >> testManagerTopThree [
         assert: ((manager topThreeMostProductiveTrees
             collect: [ :tree | tree yield ]) asArray)
         equals: #(40 30 20)
+
+]
+
+{ #category : 'tests - printing' }
+FruitTreeTest >> testPrintOn [
+	| apple |
+	apple := AppleTree new.
+	apple age: 5.
+	apple height: 2.5.
+	apple yield: 20.
+
+	self
+		assert: apple printString
+		equals: 'Apple (age: 5, height: 2.5 m, yield: 20 kg)'
+
+]
+
+{ #category : 'tests - persistence' }
+FruitTreeTest >> testSTONSaveAndLoad [
+	| manager loaded apple apricot fileName file |
+	fileName := 'fruit-trees-test-' , UUID new asString , '.ston'.
+	file := fileName asFileReference.
+
+	[
+		manager := FruitTreeManager new.
+
+		apple := AppleTree new.
+		apple age: 5.
+		apple height: 2.5.
+		apple yield: 20.
+		apple fruitColor: 'Green'.
+
+		apricot := ApricotTree new.
+		apricot age: 4.
+		apricot height: 3.
+		apricot yield: 15.
+		apricot hadFrostDuringFlowering: true.
+
+		manager addTree: apple.
+		manager addTree: apricot.
+
+		manager saveToSTON: fileName.
+
+		loaded := FruitTreeManager new.
+		loaded loadFromSTON: fileName.
+
+		self assert: loaded trees size equals: 2.
+
+		self assert: loaded trees first class equals: AppleTree.
+		self assert: loaded trees first fruitColor equals: 'Green'.
+		self assert: loaded trees first age equals: 5.
+		self assert: loaded trees first height equals: 2.5.
+
+		self assert: loaded trees second class equals: ApricotTree.
+		self assert: loaded trees second hadFrostDuringFlowering.
+		self assert: loaded trees second yield equals: 15.
+		self assert: (loaded trees second currentHarvest closeTo: 3)
+	] ensure: [
+		file exists ifTrue: [ file delete ] ]
+
+]
+
+{ #category : 'tests - manager' }
+FruitTreeTest >> testTreesOfFruitingAge [
+	| manager young old result |
+	manager := FruitTreeManager new.
+	young := ApricotTree new age: 1; yourself.
+	old := AppleTree new age: 5; yourself.
+	manager addTree: young.
+	manager addTree: old.
+
+	result := manager treesOfFruitingAge.
+
+	self assert: result size equals: 1.
+	self assert: result first == old
 
 ]
