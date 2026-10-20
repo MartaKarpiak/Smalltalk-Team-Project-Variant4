@@ -30,6 +30,14 @@ FruitTree >> canBearFruit [
     ^ age >= fruitingAge
 ]
 
+{ #category : 'as yet unclassified' }
+FruitTree >> currentHarvest [
+    ^ self canBearFruit
+        ifTrue: [ self yield ]
+        ifFalse: [ 0 ]
+
+]
+
 { #category : 'accessing' }
 FruitTree >> fruitingAge [
     ^ fruitingAge
