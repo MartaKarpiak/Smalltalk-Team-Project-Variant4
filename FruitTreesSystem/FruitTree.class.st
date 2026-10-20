@@ -15,6 +15,63 @@ Class {
 	#package : 'FruitTreesSystem'
 }
 
+{ #category : 'arithmetic' }
+FruitTree >> * anotherTree [
+    ^ self yield * anotherTree yield
+
+]
+
+{ #category : 'arithmetic' }
+FruitTree >> + anotherTree [
+    ^ self yield + anotherTree yield
+
+]
+
+{ #category : 'arithmetic' }
+FruitTree >> - anotherTree [
+    ^ self yield - anotherTree yield
+
+]
+
+{ #category : 'arithmetic' }
+FruitTree >> / anotherTree [
+    ^ self yield / anotherTree yield
+
+]
+
+{ #category : 'comparing' }
+FruitTree >> < anotherTree [
+    ^ self yield < anotherTree yield
+
+]
+
+{ #category : 'comparing' }
+FruitTree >> <= anotherTree [
+    ^ self yield <= anotherTree yield
+
+]
+
+{ #category : 'comparing' }
+FruitTree >> = anotherTree [
+    (anotherTree isKindOf: FruitTree) ifFalse: [
+        ^ false
+    ].
+    ^ self yield = anotherTree yield
+
+]
+
+{ #category : 'comparing' }
+FruitTree >> > anotherTree [
+    ^ self yield > anotherTree yield
+
+]
+
+{ #category : 'comparing' }
+FruitTree >> >= anotherTree [
+    ^ self yield >= anotherTree yield
+
+]
+
 { #category : 'accessing' }
 FruitTree >> age [
     ^ age
@@ -63,6 +120,12 @@ FruitTree >> growTwoYears [
     self growOneYear
 ]
 
+{ #category : 'comparing' }
+FruitTree >> hash [
+    ^ self yield hash
+
+]
+
 { #category : 'accessing' }
 FruitTree >> height [
     ^ height
@@ -81,6 +144,20 @@ FruitTree >> initialize [
     height := 0.
     yield := 0.
     fruitingAge := 3
+]
+
+{ #category : 'printing' }
+FruitTree >> printOn: aStream [
+    aStream
+        nextPutAll: self speciesName;
+        nextPutAll: ' (age: ';
+        nextPutAll: self age asString;
+        nextPutAll: ', height: ';
+        nextPutAll: self height asString;
+        nextPutAll: ' m, yield: ';
+        nextPutAll: self yield asString;
+        nextPutAll: ' kg)'
+
 ]
 
 { #category : 'accessing' }
