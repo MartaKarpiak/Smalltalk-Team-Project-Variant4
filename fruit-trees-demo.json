@@ -1,0 +1,18 @@
+[
+	{
+		"age" : 5,
+		"height" : 2.5,
+		"fruitingAge" : 3,
+		"yield" : 20,
+		"type" : "AppleTree",
+		"fruitColor" : "Green"
+	},
+	{
+		"age" : 4,
+		"height" : 3,
+		"hadFrostDuringFlowering" : true,
+		"fruitingAge" : 3,
+		"yield" : 15,
+		"type" : "ApricotTree"
+	}
+]
