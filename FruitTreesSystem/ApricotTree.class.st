@@ -12,6 +12,18 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+ApricotTree class >> fruitBearingAge [
+    ^ 3
+]
+
+{ #category : 'as yet unclassified' }
+ApricotTree class >> name: aName age: anAge height: aHeight yield: aYield hadFrosts: aBoolean [
+    ^ (self name: aName age: anAge height: aHeight yield: aYield)
+        hadFrosts: aBoolean;
+        yourself.
+]
+
+{ #category : 'as yet unclassified' }
 ApricotTree >> currentHarvest [
     | normalHarvest |
     normalHarvest := super currentHarvest.

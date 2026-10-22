@@ -15,6 +15,21 @@ Class {
 	#package : 'FruitTreesSystem'
 }
 
+{ #category : 'as yet unclassified' }
+FruitTree class >> fruitBearingAge [
+    ^ 3
+]
+
+{ #category : 'accessing' }
+FruitTree class >> name: aName age: anAge height: aHeight yield: aYield [
+    ^ self new
+        name: aName;
+        age: anAge;
+        height: aHeight;
+        yield: aYield;
+        yourself.
+]
+
 { #category : 'arithmetic' }
 FruitTree >> * anotherTree [
     ^ self yield * anotherTree yield
@@ -78,8 +93,8 @@ FruitTree >> age [
 ]
 
 { #category : 'accessing' }
-FruitTree >> age: aNumber [
-    age := aNumber
+FruitTree >> age: anAge [
+    age := anAge asInteger.
 ]
 
 { #category : 'testing' }
@@ -143,7 +158,11 @@ FruitTree >> initialize [
     age := 0.
     height := 0.
     yield := 0.
-    fruitingAge := 3
+]
+
+{ #category : 'testing' }
+FruitTree >> isFruiting [
+    ^ age >= self class fruitingAge
 ]
 
 { #category : 'printing' }

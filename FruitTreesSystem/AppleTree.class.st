@@ -11,6 +11,18 @@ Class {
 	#package : 'FruitTreesSystem'
 }
 
+{ #category : 'as yet unclassified' }
+AppleTree class >> fruitBearingAge [
+    ^ 3
+]
+
+{ #category : 'as yet unclassified' }
+AppleTree class >> name: aName age: anAge height: aHeight yield: aYield color: aColor [
+    ^ (self name: aName age: anAge height: aHeight yield: aYield)
+        color: aColor;
+        yourself.
+]
+
 { #category : 'testing' }
 AppleTree >> canBearFruit [
     ^ (super canBearFruit) and: [
