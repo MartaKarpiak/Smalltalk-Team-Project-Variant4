@@ -43,8 +43,7 @@ Orchard >> owner: aString [
 
 { #category : 'as yet unclassified' }
 Orchard >> passYear [
-    trees do: [ :tree | tree age: tree age + 1 ].
-    self promptToRemoveOldTrees.
+    trees do: [ :each | each growOneYear ]
 ]
 
 { #category : 'printing' }

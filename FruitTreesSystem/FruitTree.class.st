@@ -185,11 +185,10 @@ FruitTree >> printOn: aStream [
         nextPutAll: ' (age: ';
         nextPutAll: self age asString;
         nextPutAll: ', height: ';
-        nextPutAll: self height asString;
+        nextPutAll: (height printShowingDecimalPlaces: 1);
         nextPutAll: ' m, yield: ';
         nextPutAll: self yield asString;
         nextPutAll: ' kg)'
-
 ]
 
 { #category : 'accessing' }

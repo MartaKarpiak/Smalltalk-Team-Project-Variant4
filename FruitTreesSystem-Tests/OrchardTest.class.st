@@ -37,7 +37,7 @@ OrchardTest >> testFindTrees [
 OrchardTest >> testPassYear [
     orchard passYear.
     self assert: appleTree age equals: 3.
-    self assert: orchard totalYield equals: 80. 
+    self assert: orchard totalYield equals: 90. 
 ]
 
 { #category : 'tests' }
