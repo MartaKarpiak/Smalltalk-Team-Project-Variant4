@@ -528,6 +528,48 @@ FruitTreeTest >> testSTONSaveAndLoad [
 
 ]
 
+{ #category : 'tests' }
+FruitTreeTest >> testTreeDataRoundTrip [
+    | manager tree apricot restoredTree restoredApricot |
+
+    manager := FruitTreeManager new.
+
+    "Звичайне фруктове дерево"
+    tree := FruitTree new.
+    tree speciesName: 'Pear'.
+    tree age: 6.
+    tree height: 2.8.
+    tree yield: 17.
+    tree fruitingAge: 4.
+
+    restoredTree := manager treeFromData:
+        (manager treeAsData: tree).
+
+    self assert: restoredTree class equals: FruitTree.
+    self assert: restoredTree speciesName equals: 'Pear'.
+    self assert: restoredTree age equals: 6.
+    self assert: restoredTree height equals: 2.8.
+    self assert: restoredTree yield equals: 17.
+    self assert: restoredTree fruitingAge equals: 4.
+
+    "Абрикос із заморозками"
+    apricot := ApricotTree new.
+    apricot speciesName: 'SweetApricot'.
+    apricot age: 7.
+    apricot height: 3.
+    apricot yield: 20.
+    apricot hadFrostDuringFlowering: true.
+
+    restoredApricot := manager treeFromData:
+        (manager treeAsData: apricot).
+
+    self assert: restoredApricot class equals: ApricotTree.
+    self assert: restoredApricot speciesName equals: 'SweetApricot'.
+    self assert: restoredApricot hadFrostDuringFlowering.
+    self assert: restoredApricot currentHarvest equals: 4
+
+]
+
 { #category : 'tests - manager' }
 FruitTreeTest >> testTreesOfFruitingAge [
 	| manager young old result |
