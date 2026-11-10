@@ -16,8 +16,14 @@ Orchard >> addTree: aFruitTree [
 
 { #category : 'as yet unclassified' }
 Orchard >> checkFrostDamage: temperature [
-    trees do: [ :tree | 
-        temperature < 0 ifTrue: [ tree isDamagedByFrost: true ] ].
+    trees do: [ :tree |
+        tree isDamagedByFrost: (temperature < 0).
+
+        (tree isKindOf: ApricotTree) ifTrue: [
+            tree hadFrostDuringFlowering: (temperature < 0)
+        ]
+    ]
+
 ]
 
 { #category : 'as yet unclassified' }
@@ -69,8 +75,10 @@ Orchard >> removeTree: aFruitTree [
 
 { #category : 'accessing' }
 Orchard >> totalYield [
-    ^ trees sumNumbers: [ :tree | 
-        tree age >= 3 ifTrue: [ tree yield ] ifFalse: [ 0 ] ]
+    ^ trees inject: 0 into: [ :sum :tree |
+        sum + tree currentHarvest
+    ]
+
 ]
 
 { #category : 'accessing' }

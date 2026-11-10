@@ -27,6 +27,32 @@ OrchardTest >> setUp [
 ]
 
 { #category : 'tests' }
+OrchardTest >> testCheckFrostDamage [
+    | orchard apricot |
+
+    orchard := Orchard new.
+
+    apricot := ApricotTree new.
+    apricot age: 5.
+    apricot yield: 10.
+
+    orchard addTree: apricot.
+
+    self assert: orchard totalYield equals: 10.
+
+    orchard checkFrostDamage: -2.
+
+    self assert: apricot hadFrostDuringFlowering.
+    self assert: orchard totalYield equals: 2.
+
+    orchard checkFrostDamage: 5.
+
+    self deny: apricot hadFrostDuringFlowering.
+    self assert: orchard totalYield equals: 10
+
+]
+
+{ #category : 'tests' }
 OrchardTest >> testFindTrees [
     | twoYearOldApples |
     twoYearOldApples := orchard findTreesOfClass: AppleTree withCharacteristic: [ :t | t age = 2 ].
@@ -41,6 +67,23 @@ OrchardTest >> testPassYear [
 ]
 
 { #category : 'tests' }
-OrchardTest >> testTotalYield [
-    self assert: orchard totalYield equals: 30.
+OrchardTest >> testTotalYieldWithFrostAndFruitingCycle [
+    | orchard apple apricot |
+
+    orchard := Orchard new.
+
+    apple := AppleTree new.
+    apple age: 4.
+    apple yield: 20.
+
+    apricot := ApricotTree new.
+    apricot age: 5.
+    apricot yield: 10.
+    apricot hadFrostDuringFlowering: true.
+
+    orchard addTree: apple.
+    orchard addTree: apricot.
+
+    self assert: orchard totalYield equals: 2
+
 ]
