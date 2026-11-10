@@ -9,7 +9,8 @@ Class {
 		'age',
 		'height',
 		'yield',
-		'fruitingAge'
+		'fruitingAge',
+		'isDamagedByFrost'
 	],
 	#category : 'FruitTreesSystem',
 	#package : 'FruitTreesSystem'
@@ -158,6 +159,18 @@ FruitTree >> initialize [
     age := 0.
     height := 0.
     yield := 0.
+    fruitingAge := 3.
+    isDamagedByFrost := false.
+]
+
+{ #category : 'accessing' }
+FruitTree >> isDamagedByFrost [
+    ^ isDamagedByFrost
+]
+
+{ #category : 'accessing' }
+FruitTree >> isDamagedByFrost: aBoolean [
+    isDamagedByFrost := aBoolean
 ]
 
 { #category : 'testing' }
