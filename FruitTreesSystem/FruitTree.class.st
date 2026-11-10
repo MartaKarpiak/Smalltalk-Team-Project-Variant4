@@ -24,11 +24,12 @@ FruitTree class >> fruitBearingAge [
 { #category : 'accessing' }
 FruitTree class >> name: aName age: anAge height: aHeight yield: aYield [
     ^ self new
-        name: aName;
+        speciesName: aName;
         age: anAge;
         height: aHeight;
         yield: aYield;
-        yourself.
+        yourself
+
 ]
 
 { #category : 'arithmetic' }
@@ -175,7 +176,8 @@ FruitTree >> isDamagedByFrost: aBoolean [
 
 { #category : 'testing' }
 FruitTree >> isFruiting [
-    ^ age >= self class fruitingAge
+    ^ self canBearFruit
+
 ]
 
 { #category : 'printing' }

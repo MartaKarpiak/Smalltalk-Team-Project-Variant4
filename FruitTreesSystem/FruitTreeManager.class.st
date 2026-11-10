@@ -74,6 +74,14 @@ FruitTreeManager >> addTreeFromDialog [
 ]
 
 { #category : 'as yet unclassified' }
+FruitTreeManager >> findTreesOfClass: aClass withCharacteristic: aBlock [
+    ^ (treesCollection select: [ :tree |
+        tree isKindOf: aClass
+    ]) select: aBlock
+
+]
+
+{ #category : 'as yet unclassified' }
 FruitTreeManager >> growAllOneYear [
     treesCollection do: [ :tree |
         tree growOneYear
@@ -163,6 +171,20 @@ FruitTreeManager >> printOn: aStream [
 
 ]
 
+{ #category : 'removing' }
+FruitTreeManager >> removeTree: aTree [
+    | index |
+
+    index := treesCollection findFirst: [ :each |
+        each == aTree
+    ].
+
+    index = 0 ifTrue: [ ^ nil ].
+
+    ^ treesCollection removeAt: index
+
+]
+
 { #category : 'as yet unclassified' }
 FruitTreeManager >> saveToJSONFile: aFileName [
     | data file |
@@ -226,6 +248,7 @@ FruitTreeManager >> treeAsData: aTree [
     data := Dictionary new.
 
     data at: 'type' put: aTree class name asString.
+    data at: 'speciesName' put: aTree speciesName.
     data at: 'age' put: aTree age.
     data at: 'height' put: aTree height.
     data at: 'yield' put: aTree yield.
@@ -256,9 +279,17 @@ FruitTreeManager >> treeFromData: data [
             type = 'ApricotTree'
                 ifTrue: [ ApricotTree new ]
                 ifFalse: [
-                    self error: 'Unknown tree type'
+                    type = 'FruitTree'
+                        ifTrue: [ FruitTree new ]
+                        ifFalse: [
+                            self error: 'Unknown tree type'
+                        ]
                 ]
         ].
+
+    tree speciesName:
+        (data at: 'speciesName'
+            ifAbsent: [ tree speciesName ]).
 
     tree age: (data at: 'age').
     tree height: (data at: 'height').

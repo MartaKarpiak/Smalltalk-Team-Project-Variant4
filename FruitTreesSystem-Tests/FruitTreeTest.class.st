@@ -38,6 +38,25 @@ FruitTreeTest >> testAppleFruitingCycle [
 
 ]
 
+{ #category : 'tests' }
+FruitTreeTest >> testAppleTreeConstructor [
+    | apple |
+
+    apple := AppleTree
+        name: 'Apple'
+        age: 5
+        height: 2.5
+        yield: 20
+        color: 'Green'.
+
+    self assert: apple speciesName equals: 'Apple'.
+    self assert: apple age equals: 5.
+    self assert: apple height equals: 2.5.
+    self assert: apple yield equals: 20.
+    self assert: apple fruitColor equals: 'Green'
+
+]
+
 { #category : 'tests - growth' }
 FruitTreeTest >> testAppleYieldGrowsOnlyInFruitingYears [
 	| apple |
@@ -89,6 +108,26 @@ FruitTreeTest >> testApricotNoHarvestBeforeFruitingAge [
 
 	apricot hadFrostDuringFlowering: true.
 	self assert: apricot currentHarvest equals: 0
+
+]
+
+{ #category : 'tests' }
+FruitTreeTest >> testApricotTreeConstructor [
+    | apricot |
+
+    apricot := ApricotTree
+        name: 'Apricot'
+        age: 5
+        height: 3
+        yield: 20
+        hadFrosts: true.
+
+    self assert: apricot speciesName equals: 'Apricot'.
+    self assert: apricot age equals: 5.
+    self assert: apricot height equals: 3.
+    self assert: apricot yield equals: 20.
+    self assert: apricot hadFrostDuringFlowering.
+    self assert: apricot currentHarvest equals: 4
 
 ]
 
@@ -173,6 +212,23 @@ FruitTreeTest >> testEmptyManager [
 ]
 
 { #category : 'tests' }
+FruitTreeTest >> testFruitTreeConstructor [
+    | tree |
+
+    tree := FruitTree
+        name: 'Pear'
+        age: 5
+        height: 2.5
+        yield: 15.
+
+    self assert: tree speciesName equals: 'Pear'.
+    self assert: tree age equals: 5.
+    self assert: tree height equals: 2.5.
+    self assert: tree yield equals: 15
+
+]
+
+{ #category : 'tests' }
 FruitTreeTest >> testFruitTreeInitialization [
     | tree |
 
@@ -212,6 +268,30 @@ FruitTreeTest >> testGrowOneYearReachingFruitingAge [
 	self assert: tree age equals: 3.
 	self assert: tree canBearFruit.
 	self assert: tree yield equals: 15
+
+]
+
+{ #category : 'tests' }
+FruitTreeTest >> testIsFruiting [
+    | apple apricot |
+
+    apple := AppleTree new.
+    apricot := ApricotTree new.
+
+    apple age: 3.
+    self assert: apple isFruiting.
+
+    apple age: 4.
+    self deny: apple isFruiting.
+
+    apple age: 5.
+    self assert: apple isFruiting.
+
+    apricot age: 2.
+    self deny: apricot isFruiting.
+
+    apricot age: 3.
+    self assert: apricot isFruiting
 
 ]
 
@@ -445,6 +525,48 @@ FruitTreeTest >> testSTONSaveAndLoad [
 		self assert: (loaded trees second currentHarvest closeTo: 3)
 	] ensure: [
 		file exists ifTrue: [ file delete ] ]
+
+]
+
+{ #category : 'tests' }
+FruitTreeTest >> testTreeDataRoundTrip [
+    | manager tree apricot restoredTree restoredApricot |
+
+    manager := FruitTreeManager new.
+
+    "Звичайне фруктове дерево"
+    tree := FruitTree new.
+    tree speciesName: 'Pear'.
+    tree age: 6.
+    tree height: 2.8.
+    tree yield: 17.
+    tree fruitingAge: 4.
+
+    restoredTree := manager treeFromData:
+        (manager treeAsData: tree).
+
+    self assert: restoredTree class equals: FruitTree.
+    self assert: restoredTree speciesName equals: 'Pear'.
+    self assert: restoredTree age equals: 6.
+    self assert: restoredTree height equals: 2.8.
+    self assert: restoredTree yield equals: 17.
+    self assert: restoredTree fruitingAge equals: 4.
+
+    "Абрикос із заморозками"
+    apricot := ApricotTree new.
+    apricot speciesName: 'SweetApricot'.
+    apricot age: 7.
+    apricot height: 3.
+    apricot yield: 20.
+    apricot hadFrostDuringFlowering: true.
+
+    restoredApricot := manager treeFromData:
+        (manager treeAsData: apricot).
+
+    self assert: restoredApricot class equals: ApricotTree.
+    self assert: restoredApricot speciesName equals: 'SweetApricot'.
+    self assert: restoredApricot hadFrostDuringFlowering.
+    self assert: restoredApricot currentHarvest equals: 4
 
 ]
 

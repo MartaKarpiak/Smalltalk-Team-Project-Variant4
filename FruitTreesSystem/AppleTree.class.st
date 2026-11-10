@@ -18,9 +18,14 @@ AppleTree class >> fruitBearingAge [
 
 { #category : 'as yet unclassified' }
 AppleTree class >> name: aName age: anAge height: aHeight yield: aYield color: aColor [
-    ^ (self name: aName age: anAge height: aHeight yield: aYield)
-        color: aColor;
-        yourself.
+    ^ self new
+        speciesName: aName;
+        age: anAge;
+        height: aHeight;
+        yield: aYield;
+        fruitColor: aColor;
+        yourself
+
 ]
 
 { #category : 'testing' }

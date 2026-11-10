@@ -18,9 +18,14 @@ ApricotTree class >> fruitBearingAge [
 
 { #category : 'as yet unclassified' }
 ApricotTree class >> name: aName age: anAge height: aHeight yield: aYield hadFrosts: aBoolean [
-    ^ (self name: aName age: anAge height: aHeight yield: aYield)
-        hadFrosts: aBoolean;
-        yourself.
+    ^ self new
+        speciesName: aName;
+        age: anAge;
+        height: aHeight;
+        yield: aYield;
+        hadFrostDuringFlowering: aBoolean;
+        yourself
+
 ]
 
 { #category : 'as yet unclassified' }
